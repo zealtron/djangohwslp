@@ -5,6 +5,7 @@ from django.template import RequestContext, loader
 from django.http import Http404
 from django.core.urlresolvers import reverse
 from django.views import generic
+from django.utils import timezone
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
@@ -12,7 +13,9 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published polls."""
-        return Poll.objects.order_by('-pub_date')[:5]
+        return Poll.objects.filter(
+			pub_date__lte=timezone.now()
+		).order_by('-pub_date')[:5]
 
 
 class DetailView(generic.DetailView):
